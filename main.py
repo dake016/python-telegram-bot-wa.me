@@ -34,8 +34,6 @@ def echo(update: Update, context: CallbackContext) -> None:
     update.message.reply_text(update.message.text)
 
 def main() -> None:
-    """Start the bot."""
-    print(config)
     updater = Updater(config['TOKEN'])
 
     dispatcher = updater.dispatcher

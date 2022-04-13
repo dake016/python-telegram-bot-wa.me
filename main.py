@@ -20,18 +20,15 @@ config = {
 }
 
 def start(update: Update, context: CallbackContext) -> None:
-    user = update.effective_user
-    update.message.reply_markdown_v2(
-        fr'Hi {user.mention_markdown_v2()}\!',
-        reply_markup=ForceReply(selective=True),
-    )
+    update.message.reply_text("Введи номер для получения ссылки")
 
-def help_command(update: Update, context: CallbackContext) -> None:
-    update.message.reply_text('Help!')
-
-def echo(update: Update, context: CallbackContext) -> None:
-    """Echo the user message."""
-    update.message.reply_text(update.message.text)
+def make_link(update: Update, context: CallbackContext) -> None:
+    array = [int(s) for s in list(update.message.text) if s.isdigit()]
+    numbers = ''.join(str(x) for x in array)
+    if len(numbers[-10:]) != 10:
+        update.message.reply_text("Проверь правильность номера")
+        return
+    update.message.reply_text("wa.me/7" + numbers[-10:])
 
 def main() -> None:
     updater = Updater(config['TOKEN'])
@@ -39,9 +36,9 @@ def main() -> None:
     dispatcher = updater.dispatcher
 
     dispatcher.add_handler(CommandHandler("start", start))
-    dispatcher.add_handler(CommandHandler("help", help_command))
+    dispatcher.add_handler(CommandHandler("help", start))
 
-    dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, echo))
+    dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, make_link))
 
     updater.start_polling()
 
